@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function queueDoc(queueId) {
+      return get(/databases/$(database)/documents/queues/$(queueId));
+    }
+
+    function isQueueAdmin(queueId) {
+      return isSignedIn() && queueDoc(queueId).data.adminId == request.auth.uid;
+    }
+
+    function queueExists(queueId) {
+      return exists(/databases/$(database)/documents/queues/$(queueId));
+    }
+
+    match /users/{userId} {
+      allow read, create, update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    match /queues/{queueId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.adminId == request.auth.uid;
+
+      allow update: if isSignedIn() && (
+        (
+          resource.data.adminId == request.auth.uid &&
+          request.resource.data.adminId == resource.data.adminId &&
+          request.resource.data.name == resource.data.name &&
+          request.resource.data.avgServiceTime == resource.data.avgServiceTime &&
+          request.resource.data.diff(resource.data).changedKeys().hasOnly([
+            'currentToken',
+            'status',
+            'updatedAt'
+          ])
+        ) ||
+        (
+          request.resource.data.adminId == resource.data.adminId &&
+          request.resource.data.name == resource.data.name &&
+          request.resource.data.avgServiceTime == resource.data.avgServiceTime &&
+          request.resource.data.currentToken == resource.data.currentToken &&
+          request.resource.data.status == resource.data.status &&
+          request.resource.data.lastIssuedToken == resource.data.lastIssuedToken + 1 &&
+          request.resource.data.diff(resource.data).changedKeys().hasOnly([
+            'lastIssuedToken',
+            'updatedAt'
+          ]) &&
+          resource.data.status == 'active'
+        )
+      );
+
+      allow delete: if false;
+    }
+
+    match /tokens/{tokenId} {
+      allow read: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isQueueAdmin(resource.data.queueId)
+      );
+
+      allow create: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.tokenId == tokenId &&
+        request.resource.data.status == 'waiting' &&
+        queueExists(request.resource.data.queueId) &&
+        queueDoc(request.resource.data.queueId).data.status != 'ended';
+
+      allow update: if isSignedIn() && (
+        (
+          resource.data.userId == request.auth.uid &&
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.queueId == resource.data.queueId &&
+          request.resource.data.tokenId == resource.data.tokenId &&
+          request.resource.data.tokenNumber == resource.data.tokenNumber &&
+          request.resource.data.createdAt == resource.data.createdAt &&
+          request.resource.data.status == 'cancelled' &&
+          request.resource.data.diff(resource.data).changedKeys().hasOnly([
+            'status'
+          ])
+        ) ||
+        (
+          isQueueAdmin(resource.data.queueId) &&
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.queueId == resource.data.queueId &&
+          request.resource.data.tokenId == resource.data.tokenId &&
+          request.resource.data.tokenNumber == resource.data.tokenNumber &&
+          request.resource.data.createdAt == resource.data.createdAt &&
+          request.resource.data.status == 'served' &&
+          request.resource.data.diff(resource.data).changedKeys().hasOnly([
+            'status'
+          ])
+        )
+      );
+
+      allow delete: if false;
+    }
+  }
+}

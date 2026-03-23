@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "441397270796",
+    "project_id": "queueless-b363b",
+    "storage_bucket": "queueless-b363b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441397270796:android:344f78bb2d7f9b53621129",
+        "android_client_info": {
+          "package_name": "com.ars.queueless"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV816J_KCOdNdztywFI3J2cerDaIbOWDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
