@@ -1,219 +1,312 @@
 # QueueLess
 
-An AI-powered Flutter mobile application that helps businesses manage customer queues digitally and allows customers to join queues remotely without waiting physically.
+QueueLess is an AI-powered Flutter mobile application for digital queue management. It lets customers join queues remotely, track live token progress, and ask queue-related questions, while admins can create queues, manage service flow, and review AI-generated operational insights.
 
----
+## Project Overview
 
-# Project Overview
-QueueLess is a lightweight smart queue management system built with Flutter.  
-It allows customers to **join queues remotely**, track their **live token status**, and receive notifications when their turn is near.
+Manual queue handling leads to long wait times, crowded waiting areas, and poor service visibility. QueueLess replaces physical waiting with a real-time digital token system backed by Firebase Firestore and local persistence through Hive.
 
-The app also provides **AI-powered insights and wait-time predictions** to help businesses reduce crowding, optimize service time, and improve customer experience.
+The app follows a role-first flow:
 
----
+- Splash
+- Onboarding
+- Role Selection
+- Customer flow or Admin flow
 
-# Problem Statement
-Many businesses still manage queues manually. This leads to:
+## Problem Statement
 
-- Long waiting times
-- Crowded waiting areas
+Many businesses still manage queues manually. That creates:
+
+- Long and uncertain waiting times
+- Crowded service areas
 - Poor customer experience
-- Inefficient service management
-- Customers leaving before their turn
+- Weak service visibility for admins
+- Lost customers during peak demand
 
-Customers waste time waiting, while businesses struggle to handle peak hours effectively.
+## Solution
 
----
+QueueLess provides:
 
-# Solution
-QueueLess introduces a **digital token system** where customers can join queues using their mobile phones and monitor their position in real time.
+- Real-time digital token management
+- Role-based customer and admin experiences
+- Firestore-powered live queue synchronization
+- AI wait-time predictions and queue assistance
+- Admin insights and optimization suggestions
+- Hive-backed local history and session recovery
 
-AI features analyze queue data to provide:
+## Core Features
 
-- smarter wait-time predictions
-- business insights
-- queue optimization suggestions
-- conversational queue assistance
+### Customer Features
 
----
+- Join a queue with a queue ID or QR code
+- Track current token, people ahead, and estimated wait time
+- Receive near-turn alerts when 2 turns are left
+- Use a dedicated AI Queue Assistant screen
+- Review queue history and reopen active sessions
+- Recover active sessions after app relaunch
 
-# Key Features
+### Admin Features
 
-### Join Queue
-Customers can enter a **Queue ID or scan QR code** to join a queue instantly.
+- Create a new queue with average service time
+- Share queue access through queue ID and QR code
+- Serve next token
+- Pause and resume the queue
+- End the queue
+- View AI insights
+- Review admin analytics and queue history
 
-### Create Queue (Admin)
-Businesses can create and manage queues from their mobile device.
+### AI Features
 
-### Live Queue Status
-Users can see:
+- Natural-language Queue Assistant for customers
+- Smart wait-time prediction
+- AI business insights for admins
+- Queue optimization suggestions when wait time grows too long
 
-- current serving token
-- their token number
-- number of people ahead
-- estimated waiting time
+## Tech Stack
 
-### Smart Notifications
-Users receive notifications when **their turn is approaching (2 tokens left).**
-
-### AI Queue Assistant
-Customers can ask questions like:
-
-- "How long will my wait be?"
-- "When should I come back?"
-
-The AI replies using real-time queue data.
-
-### Smart Wait-Time Prediction
-AI estimates waiting time based on:
-
-- number of people ahead
-- average service duration
-- current serving speed
-
-### AI Business Insights
-Admin dashboard shows simple analytics such as:
-
-- customers served
-- average service time
-- busiest hours
-- queue performance insights
-
-### Queue Optimization Suggestions
-AI suggests operational improvements such as:
-
-- opening another counter
-- adjusting service flow during peak hours
-
-### Queue History
-Recent queues are stored locally for quick rejoining.
-
-### Offline Token Mode
-Users can still generate tokens locally when network connectivity is unstable.
-
----
-
-# Tech Stack
-
-## Frontend
-Flutter (Material UI)
-
-## Backend
-Firebase Firestore – Real-time queue updates
-
-## AI
-Google Gemini API – intelligent queue insights and assistant
-
-## Local Storage
-Hive – queue history and offline token support
-
-## State Management
-Riverpod
+- Flutter
+- Material UI
+- Riverpod
+- Firebase Firestore
+- Firebase Authentication (Anonymous Auth)
+- Firebase Cloud Messaging
+- Hive
+- Google Gemini API
+- GoRouter
 
 ## Architecture
-MVVM (Model – View – ViewModel)
 
----
+The app uses a clean MVVM structure with clear separation of UI, state, and data access.
 
-# App Flow
+- `lib/models` - domain models
+- `lib/viewmodels` - Riverpod state and feature logic
+- `lib/repositories` - Firestore, analytics, history, and session logic
+- `lib/core/services` - Firebase, notifications, Hive, identity, bootstrap, Gemini
+- `lib/views` - feature screens
+- `lib/widgets` - reusable UI building blocks
+- `functions` - Firebase Cloud Functions for backend notifications
 
-Splash Screen  
-→ Onboarding  
-→ Home Screen  
+## App Flow
 
-Home Options:
+### Customer Flow
 
-Join Queue  
-→ Enter Queue ID / Scan QR  
-→ Queue Status Screen
+- Splash
+- Onboarding
+- Role Selection
+- Customer Home
+- Join Queue
+- Queue Status
+- AI Queue Assistant
+- Queue Completed
+- Customer History
 
-Create Queue (Admin)  
-→ Admin Dashboard  
-→ Serve Next Token / Pause Queue / End Queue
+### Admin Flow
 
----
+- Splash
+- Onboarding
+- Role Selection
+- Admin Home
+- Create Queue
+- Admin Dashboard
+- AI Insights
+- Analytics and History
 
-# Development Timeline
+## Firebase Data Model
 
-### Phase 1
-Project architecture setup  
-MVVM structure implementation
+The project uses these primary collections:
 
-### Phase 2
-Core queue system development  
-Token generation and serving logic
+- `users/{uid}` - role, FCM tokens, active customer session, last admin queue
+- `queues/{queueId}` - queue metadata, admin ownership, status, counters
+- `tokens/{tokenId}` - queue membership, token status, notification bookkeeping
 
-### Phase 3
-Firestore real-time synchronization
+## Project Structure
 
-### Phase 4
-Gemini AI integration
+```text
+lib/
+  core/
+  models/
+  providers/
+  repositories/
+  storage/
+  viewmodels/
+  views/
+  widgets/
+functions/
+test/
+firebase.json
+firestore.rules
+firestore.indexes.json
+```
 
-### Phase 5
-Hive local storage and offline support
+## Getting Started
 
-### Phase 6
-Firebase notifications and production optimization
+### Prerequisites
 
-### Phase 7
-Testing, bug fixes, and Play Store deployment
+- Flutter SDK
+- Android Studio or VS Code with Flutter tooling
+- Firebase project
+- Node.js 20 if you want to deploy Cloud Functions
 
----
+### Install Dependencies
 
-# Challenges & Solutions
+```bash
+flutter pub get
+```
 
-| Challenge | Solution |
-|--------|--------|
-| Real-time queue updates | Implemented Firestore streams for instant updates |
-| Wait-time accuracy | AI prediction based on average service duration |
-| Network interruptions | Offline token fallback with Hive storage |
-| Queue congestion | AI queue optimization suggestions |
-| User confusion | Minimal and clean UI design |
+## Firebase Setup
 
----
+1. Create or use a Firebase project.
+2. Enable:
+   - Firestore
+   - Anonymous Authentication
+   - Cloud Messaging
+3. Add `google-services.json` to `android/app/`.
+4. Deploy Firestore rules and indexes:
 
-# Key Learnings
+```bash
+firebase deploy --only firestore:rules,firestore:indexes
+```
 
-- Riverpod enables scalable and maintainable state management.
-- Firestore streams are highly effective for real-time systems.
-- AI insights significantly improve operational decisions.
-- Clean UI design improves usability for both customers and businesses.
-- Offline storage is important for reliability in unstable networks.
+### Important Plan Note
 
----
+- Firestore rules and indexes can be deployed on Spark.
+- `functions/index.js` requires Firebase Cloud Functions deployment.
+- In practice, Cloud Functions deployment requires a Blaze plan.
 
-# Future Improvements
+## Gemini Configuration
 
-- Multi-counter queue system
-- QR-based instant queue joining
-- Advanced analytics dashboard
-- Web dashboard for businesses
-- Multi-branch queue management
-- AI demand prediction
+QueueLess supports live Gemini responses through Dart defines.
 
----
+```bash
+flutter run --dart-define=GEMINI_API_KEY=your_key_here
+```
 
-# Target Use Cases
+Optional model override:
 
-QueueLess can be used by:
+```bash
+flutter run --dart-define=GEMINI_API_KEY=your_key_here --dart-define=GEMINI_MODEL=gemini-1.5-flash
+```
+
+If no Gemini key is provided, the app falls back to deterministic local AI-style responses for:
+
+- Queue Assistant replies
+- Wait-time prediction fallback
+- Admin insights fallback
+
+## Run the App
+
+```bash
+flutter run
+```
+
+## Testing and Verification
+
+```bash
+flutter analyze
+flutter test
+flutter build apk --release
+```
+
+Verified in this project:
+
+- Analyzer clean
+- Unit and widget tests passing
+- Release APK build passing
+
+## Firebase Deployment
+
+### Firestore Rules and Indexes
+
+```bash
+firebase deploy --only firestore:rules,firestore:indexes
+```
+
+### Cloud Functions
+
+Install function dependencies first:
+
+```bash
+cd functions
+npm install
+cd ..
+```
+
+Then deploy:
+
+```bash
+firebase deploy --only functions
+```
+
+Cloud Functions included in this project:
+
+- Near-turn notifications
+- Queue paused notifications
+- Queue ended notifications
+- Token served notifications
+
+## Android Release
+
+Build a release APK with:
+
+```bash
+flutter build apk --release
+```
+
+Default output:
+
+```text
+build/app/outputs/flutter-apk/app-release.apk
+```
+
+## Troubleshooting
+
+### "Anonymous sign-in is not available yet"
+
+This means Firebase Auth did not produce a usable anonymous user for the running app. Check:
+
+- `google-services.json` is for the correct Firebase project
+- Anonymous Authentication is enabled
+- the app was fully rebuilt after Firebase changes
+
+Recommended recovery:
+
+```bash
+flutter clean
+flutter pub get
+flutter run
+```
+
+### Gemini not responding
+
+If Gemini is not configured, the app will still work using local fallback responses. Add `GEMINI_API_KEY` through `--dart-define` to enable live AI responses.
+
+## Current Status
+
+Implemented in the repository:
+
+- Role-first navigation flow
+- Customer and admin dashboards
+- Real-time queue logic with Firestore
+- Hive-backed history and session recovery
+- AI assistant and admin insights
+- Firestore rules and indexes
+- Cloud Functions source for backend notifications
+
+Deployment status depends on your Firebase plan:
+
+- Firestore deployment is supported on Spark
+- Cloud Functions deployment requires Blaze
+
+## Target Use Cases
 
 - Clinics and hospitals
 - Banks
 - Salons and barbershops
 - Government offices
-- Repair service centers
+- Repair centers
 - Pharmacies
-- Universities
+- Service counters and reception desks
 
----
+## Author
 
-# Deployment
-
-Target Platform:
-
-Android (Google Play Store)
-
----
-
-# Author
-Flutter Mobile Application Project
+QueueLess Flutter project built as a production-oriented MVVM mobile application.

@@ -22,4 +22,3 @@ Future<void> main() async {
   );
 }
 
-// https://github.com/thearsalanqureshi/QueueLess.git
