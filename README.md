@@ -165,9 +165,6 @@ Implemented in the repository:
 - Firestore rules and indexes
 - Cloud Functions source for backend notifications
 
-Deployment status depends on your Firebase plan:
 
-- Firestore deployment is supported on Spark
-- Cloud Functions deployment requires Blaze
 
 
