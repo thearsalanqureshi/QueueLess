@@ -138,21 +138,6 @@ firestore.rules
 firestore.indexes.json
 ```
 
-## Getting Started
-
-### Prerequisites
-
-- Flutter SDK
-- Android Studio or VS Code with Flutter tooling
-- Firebase project
-- Node.js 20 if you want to deploy Cloud Functions
-
-### Install Dependencies
-
-```bash
-flutter pub get
-```
-
 ## Firebase Setup
 
 1. Create or use a Firebase project.
@@ -167,118 +152,6 @@ flutter pub get
 firebase deploy --only firestore:rules,firestore:indexes
 ```
 
-### Important Plan Note
-
-- Firestore rules and indexes can be deployed on Spark.
-- `functions/index.js` requires Firebase Cloud Functions deployment.
-- In practice, Cloud Functions deployment requires a Blaze plan.
-
-## Gemini Configuration
-
-QueueLess supports live Gemini responses through Dart defines.
-
-```bash
-flutter run --dart-define=GEMINI_API_KEY=your_key_here
-```
-
-Optional model override:
-
-```bash
-flutter run --dart-define=GEMINI_API_KEY=your_key_here --dart-define=GEMINI_MODEL=gemini-1.5-flash
-```
-
-If no Gemini key is provided, the app falls back to deterministic local AI-style responses for:
-
-- Queue Assistant replies
-- Wait-time prediction fallback
-- Admin insights fallback
-
-## Run the App
-
-```bash
-flutter run
-```
-
-## Testing and Verification
-
-```bash
-flutter analyze
-flutter test
-flutter build apk --release
-```
-
-Verified in this project:
-
-- Analyzer clean
-- Unit and widget tests passing
-- Release APK build passing
-
-## Firebase Deployment
-
-### Firestore Rules and Indexes
-
-```bash
-firebase deploy --only firestore:rules,firestore:indexes
-```
-
-### Cloud Functions
-
-Install function dependencies first:
-
-```bash
-cd functions
-npm install
-cd ..
-```
-
-Then deploy:
-
-```bash
-firebase deploy --only functions
-```
-
-Cloud Functions included in this project:
-
-- Near-turn notifications
-- Queue paused notifications
-- Queue ended notifications
-- Token served notifications
-
-## Android Release
-
-Build a release APK with:
-
-```bash
-flutter build apk --release
-```
-
-Default output:
-
-```text
-build/app/outputs/flutter-apk/app-release.apk
-```
-
-## Troubleshooting
-
-### "Anonymous sign-in is not available yet"
-
-This means Firebase Auth did not produce a usable anonymous user for the running app. Check:
-
-- `google-services.json` is for the correct Firebase project
-- Anonymous Authentication is enabled
-- the app was fully rebuilt after Firebase changes
-
-Recommended recovery:
-
-```bash
-flutter clean
-flutter pub get
-flutter run
-```
-
-### Gemini not responding
-
-If Gemini is not configured, the app will still work using local fallback responses. Add `GEMINI_API_KEY` through `--dart-define` to enable live AI responses.
 
 ## Current Status
 
@@ -297,16 +170,4 @@ Deployment status depends on your Firebase plan:
 - Firestore deployment is supported on Spark
 - Cloud Functions deployment requires Blaze
 
-## Target Use Cases
 
-- Clinics and hospitals
-- Banks
-- Salons and barbershops
-- Government offices
-- Repair centers
-- Pharmacies
-- Service counters and reception desks
-
-## Author
-
-QueueLess Flutter project built as a production-oriented MVVM mobile application.
